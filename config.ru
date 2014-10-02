@@ -3,7 +3,6 @@ require 'sinatra/base'
 require 'assets_controller'
 require 'admin_controller'
 
-
 map '/' do
   run Sam::Assets::App
   end
