@@ -1,5 +1,6 @@
 require 'spec_helper'
 require 'user_controller'
+require 'bcrypt'
 
 describe Sam::User::App do
 
@@ -97,8 +98,9 @@ describe Sam::User::App do
               expect(Sam::Model::UserRequest.first.email).to eq email
             end
 
-            it 'sets the password correctly' do
-              expect(Sam::Model::UserRequest.first.password).to eq password
+            it 'sets the password correctly and is stored encrypted' do
+              unhashed_password = BCrypt::Password.new(Sam::Model::UserRequest.first.password)
+              expect(unhashed_password).to eq password
             end
 
           end
@@ -127,8 +129,9 @@ describe Sam::User::App do
               expect(Sam::Model::User.first.email).to eq email
             end
 
-            it 'sets the password correctly' do
-              expect(Sam::Model::User.first.password).to eq password
+            it 'sets the password correctly and is stored encrypted' do
+              unhashed_password = BCrypt::Password.new(Sam::Model::User.first.password)
+              expect(unhashed_password).to eq password
             end
           end
 

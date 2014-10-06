@@ -2,6 +2,7 @@ require 'sinatra/base'
 require 'models/user'
 require 'models/user_request'
 require 'rfc822'
+require 'bcrypt'
 
 module Sam
   module User
@@ -25,13 +26,12 @@ module Sam
       end
 
       post '/' do
+        hashed_password =  BCrypt::Password.create(params['password'])
+        email = params['email']
         if Model::User.count == 0
-          Model::User.create(email: params['email'],
-                             password: params['password'],
-                             user_type: :administrator)
+          Model::User.create(email: email, password: hashed_password,user_type: :administrator)
         else
-          Model::UserRequest.create(email: params['email'],
-                                    password: params['password'])
+          Model::UserRequest.create(email: email,password: hashed_password)
         end
       end
 
