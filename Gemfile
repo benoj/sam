@@ -5,6 +5,7 @@ gem 'thin'
 gem 'mongoid'
 gem 'bcrypt'
 gem 'rfc822'
+gem 'slim'
 
 group :development do
   gem 'rspec'

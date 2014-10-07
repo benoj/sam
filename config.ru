@@ -7,13 +7,18 @@ require 'user_controller'
 
 Mongoid.load!("mongoid.yml")
 
+
+class Sam::User::App
+  enable :sessions
+end
+
 map '/' do
   run Sam::Assets::App
-  end
+end
 
 map '/admin' do
   run Sam::Admin::App
-  end
+end
 
 map '/users' do
   run Sam::User::App

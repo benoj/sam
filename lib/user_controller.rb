@@ -3,6 +3,7 @@ require 'models/user'
 require 'models/user_request'
 require 'rfc822'
 require 'bcrypt'
+require 'slim'
 
 module Sam
   module User
@@ -11,6 +12,16 @@ module Sam
       set(:valid_email) { |value| condition { value == params['email'].is_email? } }
       set(:valid_password) { |value| condition {  value == (params['password'] == params['confirm_password']) }}
       set(:user_exists) { |value| condition {  value == Model::User.where(email: params['email']).exists? } }
+
+      post '/login' do
+        user = Sam::Model::User.where(email: params['email']).first
+        if user and BCrypt::Password.new(user.password) == params['password']
+          session[:user] = { email: user.email, type: user.user_type}
+          redirect params['url']
+        else
+          slim :login, locals: {login_failed: true}
+        end
+      end
 
       post '/', valid_password: false do
         halt(400, 'Passwords do not match')

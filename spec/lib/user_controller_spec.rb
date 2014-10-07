@@ -8,12 +8,74 @@ describe Sam::User::App do
     Rack::Builder.parse_file('config.ru').first
   end
 
+  context 'POST /login' do
+    let(:email) { "#{rand(999)}@example.com" }
+    let(:user_password) { rand(999).to_s }
+    let(:user_type) { rand(100) % 2 == 0 ? :administrator : :editor }
+    let(:url) { '/success' }
+
+    context 'when user does not exist' do
+
+      let(:login_password) { rand(999).to_s }
+
+      before do
+        post('/users/login', {email: email, password: login_password, url: url})
+        expect(last_response.status).to be 200
+      end
+
+      it 'shows login page with a warning' do
+        expect(last_response.body).to include 'The email supplied either does not exists, or the password does not match.'
+      end
+    end
+
+    context 'when user exists' do
+
+      before do
+        Sam::Model::User.create(email: email, password: BCrypt::Password.create(user_password), user_type: user_type)
+        post('/users/login', {email: email, password: login_password, url: url})
+      end
+
+      context 'and passwords do not match' do
+        let(:login_password) { rand(999).to_s }
+
+        it 'no user in session' do
+          expect(last_request.env['rack.session'][:user]).to be nil
+        end
+
+        it 'shows login page with a warning' do
+          expect(last_response.status).to be 200
+          expect(last_response.body).to include 'The email supplied either does not exists, or the password does not match.'
+        end
+      end
+
+      context 'and passwords match' do
+        let(:login_password) { user_password }
+
+        it 'should add the user email in the session' do
+          expect(last_request.env['rack.session'][:user][:email]).to eq email
+        end
+
+        it 'should add the user type in the session' do
+          expect(last_request.env['rack.session'][:user][:type]).to eq user_type
+        end
+
+        it 'should redirect the user to the URL' do
+          expect(last_response).to be_redirect
+          expect(last_response.location).to include url
+        end
+      end
+
+    end
+
+
+  end
+
   context 'POST /' do
 
     context 'with invalid email' do
 
-      invalid_emails = ['user-home','@home.com','user@','user@just,wrong.org','user@just wrong.org',
-                        'wrong,user@home.com','wrong-user.@home.com','wrong@user@home.com','wrong user@home.com',
+      invalid_emails = ['user-home', '@home.com', 'user@', 'user@just,wrong.org', 'user@just wrong.org',
+                        'wrong,user@home.com', 'wrong-user.@home.com', 'wrong@user@home.com', 'wrong user@home.com',
                         'wrong(user)@home.com']
 
       invalid_emails.each do |invalid_email|
