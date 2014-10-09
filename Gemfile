@@ -9,6 +9,10 @@ gem 'slim'
 
 group :development do
   gem 'rspec'
+  gem 'capybara'
+  gem 'cucumber'
+  gem 'poltergeist'
+  gem 'selenium-webdriver'
   gem 'database_cleaner'
   gem 'rack-test', :require => 'rack/test'
 end

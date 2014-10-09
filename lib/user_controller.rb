@@ -13,13 +13,19 @@ module Sam
       set(:valid_password) { |value| condition {  value == (params['password'] == params['confirm_password']) }}
       set(:user_exists) { |value| condition {  value == Model::User.where(email: params['email']).exists? } }
 
+
+      get '/login' do
+        success_url = URI(params['success'] || '/pages' ).path
+        slim :login, locals: {login_failed: false, redirect_url: success_url}
+      end
+
       post '/login' do
         user = Sam::Model::User.where(email: params['email']).first
         if user and BCrypt::Password.new(user.password) == params['password']
           session[:user] = { email: user.email, type: user.user_type}
           redirect params['url']
         else
-          slim :login, locals: {login_failed: true}
+          slim :login, locals: {login_failed: true, redirect_url: params['url']}
         end
       end
 

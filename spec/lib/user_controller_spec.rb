@@ -8,6 +8,40 @@ describe Sam::User::App do
     Rack::Builder.parse_file('config.ru').first
   end
 
+  context 'GET /login' do
+    before do
+      get('/users/login', {success: url})
+    end
+
+    context 'when url is supplied' do
+
+      context 'and is relative' do
+        let(:url) { '/test' }
+        it 'should render form with redirect url to new url' do
+          expect(last_response.body).to include "<input name=\"url\" type=\"hidden\" value=\"#{url}\" />"
+        end
+      end
+
+      context 'and is full domain' do
+
+        let(:url) { 'http://google.com/test' }
+        it 'should render form with redirect url to new url path' do
+          expect(last_response.body).to include "<input name=\"url\" type=\"hidden\" value=\"/test\" />"
+        end
+      end
+
+    end
+
+    context 'when url is not supplied' do
+
+      let(:url) { nil }
+      it 'should render form with default url' do
+        expect(last_response.body).to include "<input name=\"url\" type=\"hidden\" value=\"/pages\" />"
+      end
+    end
+
+  end
+
   context 'POST /login' do
     let(:email) { "#{rand(999)}@example.com" }
     let(:user_password) { rand(999).to_s }
