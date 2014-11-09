@@ -1,6 +1,8 @@
 source 'https://rubygems.org'
 
+gem 'i18n', '>= 0.6.9'
 gem 'sinatra'
+gem 'grape'
 gem 'thin'
 gem 'mongoid'
 gem 'bcrypt'

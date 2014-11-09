@@ -2,7 +2,7 @@ require 'spec_helper'
 require 'api/users'
 require 'bcrypt'
 
-describe Sam::API::Users do
+describe Sam::API do
 
   def app
     Rack::Builder.parse_file('config.ru').first
@@ -50,7 +50,7 @@ describe Sam::API::Users do
         end
 
         it 'tells the user that the passwords do not match' do
-          expect(last_response.body).to eq 'Passwords do not match'
+          expect(last_response.body).to eq 'password, confirm_password should match'
         end
       end
 
@@ -77,7 +77,7 @@ describe Sam::API::Users do
 
 
             it 'tells the user that email is already in use' do
-              expect(last_response.body).to eq 'The email supplied is already in use'
+              expect(last_response.body).to eq "#{email} is already in use"
             end
           end
 
