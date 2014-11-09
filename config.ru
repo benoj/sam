@@ -4,6 +4,7 @@ require 'mongoid'
 require 'assets_controller'
 require 'admin_controller'
 require 'user_controller'
+require 'api/users'
 
 Mongoid.load!("mongoid.yml")
 
@@ -19,8 +20,8 @@ map '/admin' do
   run Sam::Admin::App
 end
 
-map '/users' do
-  run Sam::User::Users
+map '/api/users' do
+  run Sam::API::Users
 end
 
 map '/login' do
