@@ -1,4 +1,3 @@
-require 'sinatra/base'
 require 'grape'
 require 'models/user'
 require 'models/user_request'
