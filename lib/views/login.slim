@@ -6,7 +6,7 @@ html
     -if login_failed
       p The email supplied either does not exists, or the password does not match.
 
-    form action='/users/login' method='POST'
+    form action='/login' method='POST'
       input type='hidden' name='url' value="#{redirect_url}"
       label for='email' Email
       input type='text' name='email' id='email'

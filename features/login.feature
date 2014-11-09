@@ -14,5 +14,5 @@ Feature: User Login
     And I fill in my email with 'admin@example.com'
     And I fill in my password with 'incorrect'
     And I click login
-    Then I am taken to '/users/login'
+    Then I am taken to '/login'
     But when I successfully log in I will be taken to '/pages'

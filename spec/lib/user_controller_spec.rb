@@ -2,7 +2,7 @@ require 'spec_helper'
 require 'user_controller'
 require 'bcrypt'
 
-describe Sam::User::App do
+describe Sam::User::Login do
 
   def app
     Rack::Builder.parse_file('config.ru').first
@@ -10,7 +10,7 @@ describe Sam::User::App do
 
   context 'GET /login' do
     before do
-      get('/users/login', {success: url})
+      get('/login', {success: url})
     end
 
     context 'when url is supplied' do
@@ -53,7 +53,7 @@ describe Sam::User::App do
       let(:login_password) { rand(999).to_s }
 
       before do
-        post('/users/login', {email: email, password: login_password, url: url})
+        post('login', {email: email, password: login_password, url: url})
         expect(last_response.status).to be 200
       end
 
@@ -66,7 +66,7 @@ describe Sam::User::App do
 
       before do
         Sam::Model::User.create(email: email, password: BCrypt::Password.create(user_password), user_type: user_type)
-        post('/users/login', {email: email, password: login_password, url: url})
+        post('/login', {email: email, password: login_password, url: url})
       end
 
       context 'and passwords do not match' do

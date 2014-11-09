@@ -4,7 +4,7 @@ Given(/^I am a user with email address '(.*)' and password '(.*)'$/) do |email, 
 end
 
 When(/^I am taken to the login page in order to access '(.*)'$/) do | url |
-  visit("/users/login?success=#{url}")
+  visit("/login?success=#{url}")
 end
 
 

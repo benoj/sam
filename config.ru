@@ -8,9 +8,8 @@ require 'user_controller'
 Mongoid.load!("mongoid.yml")
 
 
-class Sam::User::App
-  enable :sessions
-end
+use Rack::Session::Cookie, :key => 'rack.session', :path => '/', :secret => "#{ENV['SECRET']}"
+
 
 map '/' do
   run Sam::Assets::App
@@ -21,5 +20,11 @@ map '/admin' do
 end
 
 map '/users' do
-  run Sam::User::App
+  run Sam::User::Users
 end
+
+map '/login' do
+  run Sam::User::Login
+end
+
+
